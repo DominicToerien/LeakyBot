@@ -1,5 +1,5 @@
-const keep_alive = require('./keep_alive.js');
-const BOT_TOKEN = process.env.'BOT_TOKEN';
+
+const BOT_TOKEN = process.env.BOT_TOKEN;
 
 const commands = require("./botCommands");
 
@@ -72,6 +72,6 @@ client.on("messageCreate", async (msg) => {
     commands.timer(time, msg)
   }
 });
-console.log("test")
+
 client.on("debug", ( e ) => console.log(e));
 client.login(BOT_TOKEN);
