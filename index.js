@@ -1,5 +1,5 @@
 const keep_alive = require('./keep_alive.js');
-const BOT_TOKEN = process.env['BOT_TOKEN'];
+const BOT_TOKEN = process.env.'BOT_TOKEN';
 
 const commands = require("./botCommands");
 
