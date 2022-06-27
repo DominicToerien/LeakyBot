@@ -29,8 +29,6 @@ client.on("ready", () => {
   slashCommands.pingPong(client);
   slashCommands.addTwoNumbers(client);
   slashCommands.wordOfTheDay(client);
-  slashCommands.wordOfTheDayDabbers(client);
-  slashCommands.wordOfTheDayGym(client);
 });
 
 client.on("messageCreate", async (msg) => {
