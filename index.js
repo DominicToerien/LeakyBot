@@ -1,3 +1,4 @@
+require("dotenv").config();
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const commands = require("./botCommands");
 
@@ -23,12 +24,12 @@ client.on("messageCreate", async (msg) => {
   if (msg.content === "/leaky-commands") {
     msg.reply(
       "**Random Number Generation** \n /random<*number*> \n " +
-      "**Kick a random user from a channel** \n /kickRandomFrom<*ChannelName*> \n " +
-      "**Clear the chat of a certain number of messages** \n /clearChat<*NumberOfMessages<=100*> \n" +
-      "**Get the date** \n /date \n" +
-      "**Get your ping to the discord API server** \n /realPing \n" +
-      "**Play Rochambeau** \n /rochambeau \n" +
-      "**Start a timer (Default is minutes. Add an *s* to time in seconds)** \n /timer<number> / <number + *s*> \n"
+        "**Kick a random user from a channel** \n /kickRandomFrom<*ChannelName*> \n " +
+        "**Clear the chat of a certain number of messages** \n /clearChat<*NumberOfMessages<=100*> \n" +
+        "**Get the date** \n /date \n" +
+        "**Get your ping to the discord API server** \n /realPing \n" +
+        "**Play Rochambeau** \n /rochambeau \n" +
+        "**Start a timer (Default is minutes. Add an *s* to time in seconds)** \n /timer<number> / <number + *s*> \n"
     );
   }
   //Get Ping to API server
@@ -66,10 +67,12 @@ client.on("messageCreate", async (msg) => {
   }
   //Timer
   if (msg.content.includes("/timer")) {
-    const time = msg.content.substring(6)
-    commands.timer(time, msg)
+    const time = msg.content.substring(6);
+    commands.timer(time, msg);
   }
 });
 
-client.on("debug", ( e ) => console.log(e));
+
+console.log(Math.round(Math.random() * 3))
+//client.on("debug", (e) => console.log(e));
 client.login(BOT_TOKEN);

@@ -28,10 +28,9 @@ function kickRoulette(client, msg, kickChannel) {
       channel.fetch().then((channel) => {
         for (let [snowflake, guildMember] of channel.members) {
           channelMembers.push(guildMember.id);
-          const participants = channelMembers.length;
+          const participants = channelMembers.length - 1;
           const luckyNumber = Math.round(Math.random() * participants);
           const luckyId = channelMembers[luckyNumber];
-          console.log(luckyId);
           if (guildMember.id === luckyId) {
             guildMember.voice.setChannel(kickChannel);
             msg.reply(
