@@ -1,6 +1,4 @@
-
 const BOT_TOKEN = process.env.BOT_TOKEN;
-
 const commands = require("./botCommands");
 
 const Discord = require("discord.js");
