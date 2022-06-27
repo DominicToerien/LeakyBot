@@ -1,15 +1,36 @@
 require("dotenv").config();
+const fetch = require("node-fetch");
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const commands = require("./botCommands");
+const slashCommands = require("./botSlashCommands");
 
 const Discord = require("discord.js");
 const client = new Discord.Client({
   intents: ["GUILDS", "GUILD_MEMBERS", "GUILD_MESSAGES", "GUILD_INTEGRATIONS"],
 });
 
+let randomNumber = 0;
+setInterval(() => {
+  randomNumber = Math.round(Math.random() * 178187);
+}, 1000 * 60 * 60 * 24);
+
+async function getWord() {
+  return fetch("https://random-word-api.herokuapp.com/all")
+    .then((res) => res.json())
+    .then((data) => data[randomNumber].toString())
+    .then((str) => {
+      return str;
+    });
+}
+
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  client.user.setAvatar("./LeakyBot.png");
+  //client.user.setAvatar("./LeakyBot.png");
+  slashCommands.pingPong(client);
+  slashCommands.addTwoNumbers(client);
+  slashCommands.wordOfTheDay(client);
+  slashCommands.wordOfTheDayDabbers(client);
+  slashCommands.wordOfTheDayGym(client);
 });
 
 client.on("messageCreate", async (msg) => {
@@ -72,7 +93,73 @@ client.on("messageCreate", async (msg) => {
   }
 });
 
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isCommand()) return;
 
-console.log(Math.round(Math.random() * 3))
+  const { commandName, options } = interaction;
+
+  if (commandName === "guessword") {
+    const guessPrompt = options.getString("word") || "";
+    const guessLetters = guessPrompt.toLowerCase().trim().split("");
+
+    async function word() {
+      const dailyWord = await getWord();
+      console.log(dailyWord);
+
+      if (guessPrompt.toLowerCase().trim() === dailyWord) {
+        interaction.reply({
+          content: `Well Done, you guessed correctly! The word of the day is ${dailyWord} :grin:.`,
+        });
+      } else {
+        const wordLetters = dailyWord.split("");
+        const commonLetters = [];
+        const filteredLetters = [];
+
+        guessLetters.forEach((element) => {
+          if (wordLetters.includes(element)) {
+            commonLetters.push(element);
+          }
+        });
+
+        commonLetters.forEach((element) => {
+          if (!filteredLetters.includes(element)) {
+            filteredLetters.push(element);
+          }
+        });
+
+        if (filteredLetters.length === 0) {
+          interaction.reply({
+            content: `Your guess ${guessPrompt} contained no correct letters :upside_down:.`,
+          });
+        } else {
+          interaction.reply({
+            content: `Your guess ${guessPrompt} contained the following correct letters: ${filteredLetters.join(
+              ","
+            )}. \n Hint: The word of the day is ${
+              dailyWord.length
+            } letters long.`,
+          });
+        }
+      }
+    }
+    word();
+  }
+
+  if (commandName === "add") {
+    const num1 = options.getNumber("num1") || 0;
+    const num2 = options.getNumber("num2") || 0;
+
+    await interaction.deferReply({
+      ephemeral: true,
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    await interaction.editReply({
+      content: `The sum is ${num1 + num2}.`,
+    });
+  }
+});
+
 //client.on("debug", (e) => console.log(e));
 client.login(BOT_TOKEN);
