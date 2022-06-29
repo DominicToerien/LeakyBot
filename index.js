@@ -12,7 +12,7 @@ const client = new Discord.Client({
 let randomNumber = 0;
 setInterval(() => {
   randomNumber = Math.round(Math.random() * 178187);
-}, 3000);
+}, 1000 * 60 * 60 * 24);
 
 async function getWord() {
   return fetch("https://random-word-api.herokuapp.com/all")
