@@ -9,12 +9,10 @@ const client = new Discord.Client({
   intents: ["GUILDS", "GUILD_MEMBERS", "GUILD_MESSAGES", "GUILD_INTEGRATIONS"],
 });
 
-let randomNumber = 0;
-setInterval(() => {
-  randomNumber = Math.round(Math.random() * 178187);
-}, 1000 * 60 * 60 * 24);
 
-async function getWord() {
+let day;
+let randomNumber = Math.round(Math.random() * 178187);
+async function getWord(randomNumber) {
   return fetch("https://random-word-api.herokuapp.com/all")
     .then((res) => res.json())
     .then((data) => data[randomNumber].toString())
@@ -100,8 +98,8 @@ client.on("interactionCreate", async (interaction) => {
     const guessPrompt = options.getString("word") || "";
     const guessLetters = guessPrompt.toLowerCase().trim().split("");
 
-    async function word() {
-      const dailyWord = await getWord();
+    async function word(randomNumber) {
+      const dailyWord = await getWord(randomNumber);
       console.log(dailyWord);
 
       if (guessPrompt.toLowerCase().trim() === dailyWord) {
@@ -140,7 +138,17 @@ client.on("interactionCreate", async (interaction) => {
         }
       }
     }
-    word();
+
+    
+    let currentDay = new Date().getDay().toString();
+
+    if(currentDay != day){
+      randomNumber = Math.round(Math.random() * 178187);
+      word(randomNumber);
+      day = currentDay;
+    } else {
+      word(randomNumber)  
+    }
   }
 
   if (commandName === "add") {
