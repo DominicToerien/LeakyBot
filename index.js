@@ -109,27 +109,27 @@ client.on("interactionCreate", async (interaction) => {
       } else {
         const wordLetters = dailyWord.split("");
         const commonLetters = [];
-        const filteredLetters = [];
+       // const filteredLetters = [];
 
-        guessLetters.forEach((element) => {
-          if (wordLetters.includes(element)) {
+        wordLetters.forEach((element) => {
+          if (guessLetters.includes(element)) {
             commonLetters.push(element);
           }
         });
 
-        commonLetters.forEach((element) => {
-          if (!filteredLetters.includes(element)) {
-            filteredLetters.push(element);
-          }
-        });
+        //commonLetters.forEach((element) => {
+        //  if (!filteredLetters.includes(element)) {
+        //    filteredLetters.push(element);
+        //  }
+        //});
 
-        if (filteredLetters.length === 0) {
+        if (commonLetters.length === 0) {
           interaction.reply({
             content: `Your guess ${guessPrompt} contained no correct letters :upside_down:.`,
           });
         } else {
           interaction.reply({
-            content: `Your guess ${guessPrompt} contained the following correct letters: ${filteredLetters.join(
+            content: `Your guess ${guessPrompt} contained the following correct letters: ${commonLetters.join(
               ","
             )}. \n Hint: The word of the day is ${
               dailyWord.length
