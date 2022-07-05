@@ -102,15 +102,14 @@ client.on("interactionCreate", async (interaction) => {
       console.log(dailyWord);
 
       let wordExists;
-      async function checkWord() {
-        return fetch("https://random-word-api.herokuapp.com/all")
-          .then((res) => res.json())
-          .then((data) => () => {
-            if (data.includes(dailyWord)) {
-              wordExists = true;
-            }
-          });
-      }
+
+      fetch("https://random-word-api.herokuapp.com/all")
+        .then((res) => res.json())
+        .then((data) => () => {
+          if (data.includes(dailyWord)) {
+            wordExists = true;
+          }
+        });
 
       if (wordExists) {
         if (guessPrompt.toLowerCase().trim() === dailyWord) {
