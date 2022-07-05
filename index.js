@@ -105,7 +105,7 @@ client.on("interactionCreate", async (interaction) => {
         return fetch("https://random-word-api.herokuapp.com/all")
           .then((res) => res.json())
           .then((data) => {
-            if (data.includes(dailyWord)) {
+            if (data.includes(guessPrompt.toLowerCase().trim())) {
               return true;
             } else {
               return false;
