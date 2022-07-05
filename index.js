@@ -101,47 +101,50 @@ client.on("interactionCreate", async (interaction) => {
       const dailyWord = await getWord(randomNumber);
       console.log(dailyWord);
 
+      let wordExists;
       async function checkWord() {
         return fetch("https://random-word-api.herokuapp.com/all")
           .then((res) => res.json())
           .then((data) => () => {
             if (data.includes(dailyWord)) {
-              return true;
+              wordExists = true;
             }
           });
       }
 
-      if (guessPrompt.toLowerCase().trim() === dailyWord) {
-        interaction.reply({
-          content: `Well Done, you guessed correctly! The word of the day is ${dailyWord} :grin:`,
-        });
-      } else if (!checkWord()) {
+      if (wordExists) {
+        if (guessPrompt.toLowerCase().trim() === dailyWord) {
+          interaction.reply({
+            content: `Well Done, you guessed correctly! The word of the day is ${dailyWord} :grin:`,
+          });
+        } else {
+          const wordLetters = dailyWord.split("");
+          const commonLetters = [];
+          wordLetters.forEach((element) => {
+            if (guessLetters.includes(element)) {
+              commonLetters.push(element);
+            }
+          });
+
+          if (commonLetters.length === 0) {
+            interaction.reply({
+              content: `Your guess ${guessPrompt} contained no correct letters :upside_down:`,
+            });
+          } else {
+            interaction.reply({
+              content: `Your guess ${guessPrompt} contained the following correct letters: ${commonLetters.join(
+                ","
+              )}. \n Hint: The word of the day is ${
+                dailyWord.length
+              } letters long.`,
+            });
+          }
+        }
+      } else {
         interaction.reply({
           content:
             "Sorry, that word doesn't exist in my dictionary :upside_down:",
         });
-      } else {
-        const wordLetters = dailyWord.split("");
-        const commonLetters = [];
-        wordLetters.forEach((element) => {
-          if (guessLetters.includes(element)) {
-            commonLetters.push(element);
-          }
-        });
-
-        if (commonLetters.length === 0) {
-          interaction.reply({
-            content: `Your guess ${guessPrompt} contained no correct letters :upside_down:`,
-          });
-        } else {
-          interaction.reply({
-            content: `Your guess ${guessPrompt} contained the following correct letters: ${commonLetters.join(
-              ","
-            )}. \n Hint: The word of the day is ${
-              dailyWord.length
-            } letters long.`,
-          });
-        }
       }
     }
 
