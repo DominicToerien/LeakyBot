@@ -9,7 +9,6 @@ const client = new Discord.Client({
   intents: ["GUILDS", "GUILD_MEMBERS", "GUILD_MESSAGES", "GUILD_INTEGRATIONS"],
 });
 
-
 let day;
 let randomNumber = Math.round(Math.random() * 178187);
 async function getWord(randomNumber) {
@@ -102,30 +101,37 @@ client.on("interactionCreate", async (interaction) => {
       const dailyWord = await getWord(randomNumber);
       console.log(dailyWord);
 
+      async function checkWord() {
+        return fetch("https://random-word-api.herokuapp.com/all")
+          .then((res) => res.json())
+          .then((data) => () => {
+            if (data.includes(dailyWord)) {
+              return true;
+            }
+          });
+      }
+
       if (guessPrompt.toLowerCase().trim() === dailyWord) {
         interaction.reply({
-          content: `Well Done, you guessed correctly! The word of the day is ${dailyWord} :grin:.`,
+          content: `Well Done, you guessed correctly! The word of the day is ${dailyWord} :grin:`,
+        });
+      } else if (!checkWord()) {
+        interaction.reply({
+          content:
+            "Sorry, that word doesn't exist in my dictionary :upside_down:",
         });
       } else {
         const wordLetters = dailyWord.split("");
         const commonLetters = [];
-       // const filteredLetters = [];
-
         wordLetters.forEach((element) => {
           if (guessLetters.includes(element)) {
             commonLetters.push(element);
           }
         });
 
-        //commonLetters.forEach((element) => {
-        //  if (!filteredLetters.includes(element)) {
-        //    filteredLetters.push(element);
-        //  }
-        //});
-
         if (commonLetters.length === 0) {
           interaction.reply({
-            content: `Your guess ${guessPrompt} contained no correct letters :upside_down:.`,
+            content: `Your guess ${guessPrompt} contained no correct letters :upside_down:`,
           });
         } else {
           interaction.reply({
@@ -139,15 +145,14 @@ client.on("interactionCreate", async (interaction) => {
       }
     }
 
-    
     let currentDay = new Date().getDay().toString();
 
-    if(currentDay != day){
+    if (currentDay != day) {
       randomNumber = Math.round(Math.random() * 178187);
       word(randomNumber);
       day = currentDay;
     } else {
-      word(randomNumber)  
+      word(randomNumber);
     }
   }
 
